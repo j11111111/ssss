@@ -1,0 +1,603 @@
+多节点是 分片是服务器数*2
+
+
+单节点
+第一步：
+	先执行2.2  数据库建库脚本 （c.bat)
+
+
+第二步：ES修改
+1
+http://192.168.1.76:9200/_template/tracklog  ---put方式
+
+内容体
+{
+  "order": 0,
+  "template": "tracklog*",
+  "settings": {
+    "index": {
+      "number_of_shards": "1",
+      "number_of_replicas": "0",
+      "refresh_interval": "10s"
+    }
+  },
+  "mappings": {
+    "information": {
+      "properties": {
+        "AREACODE": {
+          "type": "integer"
+        },
+	"ALYCHARGETYPE": {
+          "type": "integer"
+        },
+        "PLATEPREFIX": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "PASSPORTID": {
+          "type": "long"
+        },
+        "HOURNUMBER": {
+          "type": "integer"
+        },
+	"HWCHARGETYPE": {
+          "type": "integer"
+        },
+        "PLATEAREA": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "DATENUMBER": {
+          "type": "long"
+        },
+        "DATEPART": {
+          "type": "long"
+        },
+        "DIRECTIONID": {
+          "type": "integer"
+        },
+	"DFETIME": {
+          "type": "integer"
+        },
+        "CELLPHONE": {
+          "type": "integer"
+        },
+	"VEHICLESEATS": {
+          "type": "integer"
+        },
+        "ORIGINALPLATE": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "VEHICLETYPE": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "CARSCOLOR": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "BRANDNAME": {
+	"index": "not_analyzed",
+          "type": "string"
+        },
+        "SAFEBELT": {
+          "type": "integer"
+        },
+        "PLATETYPE": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "BRANDCODE": {
+          "type": "integer"
+        },
+        "SUNVISOR": {
+          "type": "integer"
+        },
+        "VENDORCODE": {
+          "type": "integer"
+        },
+        "ID": {
+          "type": "long"
+        },
+        "PLATENUMBER": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "YEARCODE": {
+          "type": "integer"
+        },
+        "SECONDPLATE": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+	"STATUS": {
+          "type": "integer"
+        },
+        "PLANDPID": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "PLANDCODE": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "PLATECONFIDENCE": {
+          "index": "not_analyzed",
+          "type": "integer"
+        },
+        "BRANDCONFIDENCE": {
+          "index": "not_analyzed",
+          "type": "integer"
+        },
+        "TIME": {
+          "type": "date",
+          "format":"yyyy-MM-dd HH:mm:ss"
+        }
+      }
+    }
+  },
+  "aliases": {}
+}
+
+
+
+2
+
+http://192.168.1.19:9200/tracklog*/_mapping/information  ---put方式
+内容体
+{ 
+  "properties": {
+    "TIME": {
+          "type": "date",
+          "format":"yyyy-MM-dd HH:mm:ss"
+        },
+        "HWCHARGETYPE": {
+          "type": "integer"
+        },
+        "ALYCHARGETYPE": {
+          "type": "integer"
+        },
+        "DFETIME": {
+          "type": "integer"
+        },
+        "STATUS": {
+          "type": "integer"
+        },
+	"VEHICLESEATS": {
+          "type": "integer"
+        }
+  }
+}
+
+3
+
+http://192.168.1.190:9200/tracklog*/_settings/    --put方式
+{
+  "settings": {
+    "index.max_result_window": "100000"
+  }
+}
+
+
+
+4
+
+--关闭副本（单节点的机器执行）
+
+http://192.168.1.190:9200/tracklog*/_settings/    --put方式
+{
+  "settings": {
+    "number_of_replicas": 0
+  }
+}
+
+
+
+
+第三步:升级VDAU
+a: 先关闭进程 java_vs
+
+b；执行  installService.bat  
+
+第四步：
+检查数据是否正常
+
+
+
+
+
+
+多节点---三台机子
+
+第一步：
+	先执行2.2  数据库建库脚本 （c.bat)
+
+
+第二步：ES修改
+1
+http://192.168.1.76:9200/_template/tracklog  ---put方式
+
+内容体
+{
+  "order": 0,
+  "template": "tracklog*",
+  "settings": {
+    "index": {
+      "number_of_shards": "6",
+      "number_of_replicas": "1",
+      "refresh_interval": "10s"
+    }
+  },
+  "mappings": {
+    "information": {
+      "properties": {
+        "AREACODE": {
+          "type": "integer"
+        },
+	"ALYCHARGETYPE": {
+          "type": "integer"
+        },
+        "PLATEPREFIX": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "PASSPORTID": {
+          "type": "long"
+        },
+        "HOURNUMBER": {
+          "type": "integer"
+        },
+	"HWCHARGETYPE": {
+          "type": "integer"
+        },
+        "PLATEAREA": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "DATENUMBER": {
+          "type": "long"
+        },
+        "DATEPART": {
+          "type": "long"
+        },
+        "DIRECTIONID": {
+          "type": "integer"
+        },
+	"DFETIME": {
+          "type": "integer"
+        },
+        "CELLPHONE": {
+          "type": "integer"
+        },
+	"VEHICLESEATS": {
+          "type": "integer"
+        },
+        "ORIGINALPLATE": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "VEHICLETYPE": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "CARSCOLOR": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "BRANDNAME": {
+	"index": "not_analyzed",
+          "type": "string"
+        },
+        "SAFEBELT": {
+          "type": "integer"
+        },
+        "PLATETYPE": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "BRANDCODE": {
+          "type": "integer"
+        },
+        "SUNVISOR": {
+          "type": "integer"
+        },
+        "VENDORCODE": {
+          "type": "integer"
+        },
+        "ID": {
+          "type": "long"
+        },
+        "PLATENUMBER": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "YEARCODE": {
+          "type": "integer"
+        },
+        "SECONDPLATE": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+	"STATUS": {
+          "type": "integer"
+        },
+        "PLANDPID": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "PLANDCODE": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "PLATECONFIDENCE": {
+          "index": "not_analyzed",
+          "type": "integer"
+        },
+        "BRANDCONFIDENCE": {
+          "index": "not_analyzed",
+          "type": "integer"
+        },
+        "TIME": {
+          "type": "date",
+          "format":"yyyy-MM-dd HH:mm:ss"
+        }
+      }
+    }
+  },
+  "aliases": {}
+}
+
+
+
+2
+
+http://192.168.1.19:9200/tracklog*/_mapping/information  ---put方式
+内容体
+{ 
+  "properties": {
+    "TIME": {
+          "type": "date",
+          "format":"yyyy-MM-dd HH:mm:ss"
+        },
+        "HWCHARGETYPE": {
+          "type": "integer"
+        },
+        "ALYCHARGETYPE": {
+          "type": "integer"
+        },
+        "DFETIME": {
+          "type": "integer"
+        },
+        "STATUS": {
+          "type": "integer"
+        },
+	"VEHICLESEATS": {
+          "type": "integer"
+        }
+  }
+}
+
+3
+
+http://192.168.1.190:9200/tracklog*/_settings/    --put方式
+{
+  "settings": {
+    "index.max_result_window": "100000"
+  }
+}
+
+
+
+
+第三步:升级VDAU
+a: 先关闭进程 java_vs
+
+b；执行  installService.bat  
+
+第四步：
+检查数据是否正常
+
+
+
+
+多节点---四台机子
+
+第一步：
+	先执行2.2  数据库建库脚本 （c.bat)
+
+
+第二步：ES修改
+1
+http://192.168.1.76:9200/_template/tracklog  ---put方式
+
+内容体
+{
+  "order": 0,
+  "template": "tracklog*",
+  "settings": {
+    "index": {
+      "number_of_shards": "8",
+      "number_of_replicas": "1",
+      "refresh_interval": "10s"
+    }
+  },
+  "mappings": {
+    "information": {
+      "properties": {
+        "AREACODE": {
+          "type": "integer"
+        },
+	"ALYCHARGETYPE": {
+          "type": "integer"
+        },
+        "PLATEPREFIX": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "PASSPORTID": {
+          "type": "long"
+        },
+        "HOURNUMBER": {
+          "type": "integer"
+        },
+	"HWCHARGETYPE": {
+          "type": "integer"
+        },
+        "PLATEAREA": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "DATENUMBER": {
+          "type": "long"
+        },
+        "DATEPART": {
+          "type": "long"
+        },
+        "DIRECTIONID": {
+          "type": "integer"
+        },
+	"DFETIME": {
+          "type": "integer"
+        },
+        "CELLPHONE": {
+          "type": "integer"
+        },
+	"VEHICLESEATS": {
+          "type": "integer"
+        },
+        "ORIGINALPLATE": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "VEHICLETYPE": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "CARSCOLOR": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "BRANDNAME": {
+	"index": "not_analyzed",
+          "type": "string"
+        },
+        "SAFEBELT": {
+          "type": "integer"
+        },
+        "PLATETYPE": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "BRANDCODE": {
+          "type": "integer"
+        },
+        "SUNVISOR": {
+          "type": "integer"
+        },
+        "VENDORCODE": {
+          "type": "integer"
+        },
+        "ID": {
+          "type": "long"
+        },
+        "PLATENUMBER": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "YEARCODE": {
+          "type": "integer"
+        },
+        "SECONDPLATE": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+	"STATUS": {
+          "type": "integer"
+        },
+        "PLANDPID": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "PLANDCODE": {
+          "index": "not_analyzed",
+          "type": "string"
+        },
+        "PLATECONFIDENCE": {
+          "index": "not_analyzed",
+          "type": "integer"
+        },
+        "BRANDCONFIDENCE": {
+          "index": "not_analyzed",
+          "type": "integer"
+        },
+        "TIME": {
+          "type": "date",
+          "format":"yyyy-MM-dd HH:mm:ss"
+        }
+      }
+    }
+  },
+  "aliases": {}
+}
+
+
+
+2
+
+http://192.168.1.19:9200/tracklog*/_mapping/information  ---put方式
+内容体
+{ 
+  "properties": {
+    "TIME": {
+          "type": "date",
+          "format":"yyyy-MM-dd HH:mm:ss"
+        },
+        "HWCHARGETYPE": {
+          "type": "integer"
+        },
+        "ALYCHARGETYPE": {
+          "type": "integer"
+        },
+        "DFETIME": {
+          "type": "integer"
+        },
+        "STATUS": {
+          "type": "integer"
+        },
+	"VEHICLESEATS": {
+          "type": "integer"
+        }
+  }
+}
+
+3
+
+http://192.168.1.190:9200/tracklog*/_settings/    --put方式
+{
+  "settings": {
+    "index.max_result_window": "100000"
+  }
+}
+
+
+
+
+第三步:升级VDAU
+a: 先关闭进程 java_vs
+
+b；执行  installService.bat  
+
+第四步：
+检查数据是否正常
+
+
+
+
+
+
+
+
+
+
+ 
